@@ -77,6 +77,7 @@ app.get("/api/message/:convId",async (req,res)=>{
     try{
 
         await mongoose.connect(url);
+        console.log("connected");
 
         const messages = await Message.find({
             convId: req.params.convId
