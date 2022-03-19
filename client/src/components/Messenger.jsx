@@ -3,6 +3,7 @@ import Converstation from './Converstations';
 import Message from './Message';
 import ChatOnline from './ChatOnline';
 import axios from "axios";
+import {io} from "socket.io-client";
 
 
 const Messenger = () => {
@@ -14,8 +15,18 @@ const Messenger = () => {
     const [messages, setMessages]= useState([]);
     const [newMessage, setNewMessage]= useState([]);
     const scrollRef = useRef();
+    const [socket, setSocket]=useState();
 
 
+    useEffect(()=>{
+        setSocket(io("ws://localhost:8900"))
+    },[]);
+
+    useEffect(()=>{
+        socket?.on("welcome", message=>{
+            console.log(message);
+        })
+    },[socket]);
 
   
 
