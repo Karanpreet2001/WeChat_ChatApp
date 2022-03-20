@@ -16,16 +16,40 @@ const Messenger = (cont) => {
     const [currentChat, setCurrentChat]= useState(null);
     const [messages, setMessages]= useState([]);
     const [newMessage, setNewMessage]= useState([]);
+    const [arrivalMessage, setArrivalMessage]= useState(null);
+
     const scrollRef = useRef();
-    const socket=useRef(io("ws://localhost:8900"));
+    const socket=useRef();
 
     // const users= useC
 
 
+    useEffect(()=>{
+            socket.current= io("ws://localhost:8900");
+           
+                socket.current.on("getMessage",data=>{
+                    setArrivalMessage({
+                        sender: data.senderId,
+
+                        text: data.text,
+                        createdAt: Date.now()
+                    })
+                })
+  
+    },[]);
+
 
     useEffect(()=>{
-        // socket.current.emit("addUser", user)
-    })
+            arrivalMessage && currentChat?.members.includes(arrivalMessage.sender)&&
+            setMessages((prev)=>[...prev,arrivalMessage]);
+    },[arrivalMessage, currentChat]);
+
+    useEffect(()=>{
+        socket.current.emit("addUser",contact);
+        socket.current.on("getUsers",contacts=>{
+            console.log(contacts)
+        })
+    },[contact]);
 
   
 
@@ -48,7 +72,7 @@ const Messenger = (cont) => {
         const getMessages = async() =>{
             try{
 
-                const res= await axios.get("http://localhost:5000/api/message/"+currentChat._id);
+                const res= await axios.get("http://localhost:5000/api/message/"+currentChat?._id);
                 setMessages(res.data);
             }catch(err){
                 console.log(err);
@@ -61,6 +85,7 @@ const Messenger = (cont) => {
 
 
     
+   
     const handleSubmit =async ()=>{
       
 
@@ -69,6 +94,17 @@ const Messenger = (cont) => {
             text: newMessage,
             convId: currentChat._id
         }
+
+        
+
+        console.log(currentChat);
+        // const receiverId = currentChat.find(currChat=>currChat.receiverId!==contact);  
+
+        socket.current.emit("sendMesaage",{
+            senderId:contact,
+            receiverId:currentChat.receiverId,
+             text:newMessage,
+        })
 
         try{
             const res= await axios.post("http://localhost:5000/api/message",message);
