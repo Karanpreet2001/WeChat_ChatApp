@@ -6,27 +6,26 @@ import axios from "axios";
 import {io} from "socket.io-client";
 
 
-const Messenger = () => {
+const Messenger = (cont) => {
 
-    const contact="6047251852";
+    
+    // const contact = props.contact;
+    const contact = cont.userContact;
 
     const [conversation, setConversation]= useState([]);
     const [currentChat, setCurrentChat]= useState(null);
     const [messages, setMessages]= useState([]);
     const [newMessage, setNewMessage]= useState([]);
     const scrollRef = useRef();
-    const [socket, setSocket]=useState();
+    const socket=useRef(io("ws://localhost:8900"));
+
+    // const users= useC
+
 
 
     useEffect(()=>{
-        setSocket(io("ws://localhost:8900"))
-    },[]);
-
-    useEffect(()=>{
-        socket?.on("welcome", message=>{
-            console.log(message);
-        })
-    },[socket]);
+        // socket.current.emit("addUser", user)
+    })
 
   
 

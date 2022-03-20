@@ -1,15 +1,26 @@
 import logo from './logo.svg';
 import './App.css';
-import Header from "./components/Header";
-import Messenger from "./components/Messenger";
 
+import Login from"./components/Login";
+import { Container } from 'react-bootstrap';
+import Routess from './components/Routess';
+import {BrowserRouter as Router} from 'react-router-dom';
 
 function App() {
   return (
-    <div>
-      <Header/>
-      <Messenger/>
-    </div>
+  
+    <div className="App">
+      
+    <Router>
+        
+      <Container>
+        <Routess></Routess>
+      </Container>
+    </Router>
+    
+
+  </div>
+ 
   );
 }
 

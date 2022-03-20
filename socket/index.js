@@ -10,4 +10,5 @@ io.on("connection",(socket)=>{
     console.log("a user connected");
 
     // take userId and socketId from user
+    
 });
