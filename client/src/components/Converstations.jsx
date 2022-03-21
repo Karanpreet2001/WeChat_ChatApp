@@ -3,28 +3,34 @@ import "./conversation.css";
 import axios from "axios";
 
 
-const Converstation = ({conversation}) => {
+const Converstation = ({conversation, currentUser}) => {
 
     const [userContact, setUserContact]= useState([]);
 
     useEffect(()=>{
-        axios
-          .get("http://localhost:5000/api/user/"+conversation.receiverId)
-          .then(resp=>{
-            console.log(resp,resp.data[0]);
-            setUserContact(resp.data[0]);
-          })
-          .catch(err=>{
-            console.log(err);
-          })
+
+      const friendId = conversation.members.find(m=>m !==currentUser);
+       console.log(friendId);
+
+      const getUser = async()=>{
+
+        try{
+          const res = await axios("http://localhost:5000/api/user/"+friendId);
+          console.log(res.data);
+          setUserContact(res.data);
+        }catch(err){
+          console.log(err)
+        }
+      }
+      getUser()
     
-      },[]); 
+      },[currentUser,conversation]); 
 
 
     return ( 
         <div className="conversation">
-            <img className="conversationImg" src={userContact.image} alt=""/>
-            <span className="conversationName">{userContact.userName}</span>
+            <img className="conversationImg" src={userContact[0]?.image} alt=""/>
+            <span className="conversationName">{userContact[0]?.userName}</span>
         </div>
      );
      //new

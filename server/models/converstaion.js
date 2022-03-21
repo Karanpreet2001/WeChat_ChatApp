@@ -5,11 +5,8 @@ const mongoose= require("mongoose");
 
 const ConversationSchema = new mongoose.Schema(
     {
-        senderId:{
-            type:String
-        },
-        receiverId:{
-            type:String
+        members:{
+            type:Array
         }
     },
         {timestamps:true}

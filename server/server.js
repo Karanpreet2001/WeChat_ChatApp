@@ -21,11 +21,10 @@ app.use(cors());
 
 app.post("/api/conversation",async (req,res)=>{
 
-    const {senderId,receiverId}= req.body;
+    // const {senderId,receiverId}= req.body;
 
     const conversation = new Conversation({
-        senderId:senderId,
-        receiverId:receiverId
+        members:[req.body.senderId, req.body.receiverId]
     })
 
     try{
@@ -49,17 +48,17 @@ app.post("/api/conversation",async (req,res)=>{
     }
 });
 
-app.get("/api/conversation/:senderId", async (req,res)=>{
+app.get("/api/conversation/:userId", async (req,res)=>{
 
 
-    let senderId = req.params.senderId;
+ 
     try{
 
         
         await mongoose.connect(url);
 
         const conversation = await Conversation.find({
-            senderId:senderId
+            members:{$in:[req.params.userId]},
         });
 
         res.status(200).json(conversation);

@@ -57,6 +57,7 @@ const Messenger = (cont) => {
 
         axios.get("http://localhost:5000/api/conversation/"+contact)
         .then(resp=>{
+                console.log(resp.data);
                 setConversation(resp.data)
         })
         .catch(err=>{
@@ -72,7 +73,7 @@ const Messenger = (cont) => {
         const getMessages = async() =>{
             try{
 
-                const res= await axios.get("http://localhost:5000/api/message/"+currentChat?._id);
+                const res= await axios.get("http://localhost:5000/api/message/"+currentChat._id);
                 setMessages(res.data);
             }catch(err){
                 console.log(err);
@@ -84,6 +85,7 @@ const Messenger = (cont) => {
     },[currentChat]);
 
 
+    console.log(currentChat);
     
    
     const handleSubmit =async ()=>{
@@ -97,7 +99,7 @@ const Messenger = (cont) => {
 
         
 
-        console.log(currentChat);
+     
         // const receiverId = currentChat.find(currChat=>currChat.receiverId!==contact);  
 
         socket.current.emit("sendMesaage",{
@@ -110,7 +112,7 @@ const Messenger = (cont) => {
             const res= await axios.post("http://localhost:5000/api/message",message);
             setMessages([...messages,res.data]);
             setNewMessage("");
-            console.log(newMessage);
+            
 
         }catch(err){
             console.log(err);
@@ -128,6 +130,8 @@ const Messenger = (cont) => {
     
 
 
+    
+
     return ( 
         <div>
 
@@ -137,8 +141,8 @@ const Messenger = (cont) => {
                         <input placeholder="Search For Friends" className="chatMenuInput"/>
   
                         {conversation.map((c)=>(
-                            <div onClick={() => setCurrentChat(c)}>
-                                <Converstation conversation={c} key={c._id}/>
+                            <div key={c._id} onClick={() => setCurrentChat(c)}>
+                                <Converstation conversation={c} currentUser={contact} />
                             </div>
                         ))}
 
@@ -174,7 +178,7 @@ const Messenger = (cont) => {
 
                     </div> </> : <span className="conversation-chat-msg">Open a conversation to start chat</span>
 
-                            }
+                 }
                     
 
                     </div></div>
