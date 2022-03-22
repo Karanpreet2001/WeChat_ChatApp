@@ -6,17 +6,27 @@ const io = require("socket.io")(8900,{
 
 let contacts=[];
 
-const adduser=(contact,socketId)=>{
+
+const addUser=(contact,socketId)=>{
+
+    
     !contacts.some(cont=>cont.contact===contact) &&
             contacts.push({contact,socketId});
 };
 
 const removeUser = (socketId)=>{
-    contacts= contacts.filter(cont=>cont.socketId!=socketId);
+    contacts= contacts.filter(cont=>cont.socketId!==socketId);
+
+    return contacts;
 }
 
-const getuser=(contact)=>{
-    return contacts.find(cont=>cont.contact===contact);
+const getUser=(contact)=>{
+ 
+    console.log(contacts);
+
+    let main= contacts.find(cont=>cont.contact===contact);
+    
+    return main;
 }
 
 io.on("connection",(socket)=>{
@@ -25,14 +35,17 @@ io.on("connection",(socket)=>{
 
     // take userId and socketId from user
     socket.on("addUser",contact=>{
-            adduser(contact,socket.id);
+            addUser(contact,socket.id);
             io.emit("getUsers",contacts);
     });
 
     //send and get message
-    socket.on("sendmessage",({senderId,receiverId,text})=>{
-            const contact = getuser(receiverId);
-            io.to(contact.socketId).emit("getMessage",{
+    socket.on("sendMessage",({senderId,receiverId,text})=>{
+           
+        
+        const user = getUser(receiverId);
+
+            io.to(user.socketId).emit("getMessage",{
                 senderId,
                 text,
 

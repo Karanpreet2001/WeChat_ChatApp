@@ -22,32 +22,39 @@ const Messenger = (cont) => {
     const socket=useRef();
 
     // const users= useC
+useEffect(()=>{
+    socket.current= io("ws://localhost:8900");
+},[]);
 
+useEffect(()=>{
 
-    useEffect(()=>{
-            socket.current= io("ws://localhost:8900");
            
                 socket.current.on("getMessage",data=>{
+                    console.log("Got message");
+                    console.log(data);
+
                     setArrivalMessage({
                         sender: data.senderId,
 
                         text: data.text,
                         createdAt: Date.now()
-                    })
-                })
+                    });
+                });
   
-    },[]);
+    },[arrivalMessage]);
 
+    // console.log(arrivalMessage);
 
     useEffect(()=>{
             arrivalMessage && currentChat?.members.includes(arrivalMessage.sender)&&
             setMessages((prev)=>[...prev,arrivalMessage]);
+            // console.log(messages);
     },[arrivalMessage, currentChat]);
 
     useEffect(()=>{
         socket.current.emit("addUser",contact);
         socket.current.on("getUsers",contacts=>{
-            console.log(contacts)
+            console.log(contacts);
         })
     },[contact]);
 
@@ -57,7 +64,7 @@ const Messenger = (cont) => {
 
         axios.get("http://localhost:5000/api/conversation/"+contact)
         .then(resp=>{
-                console.log(resp.data);
+                // console.log(resp.data);
                 setConversation(resp.data)
         })
         .catch(err=>{
@@ -100,13 +107,14 @@ const Messenger = (cont) => {
         
 
      
-        // const receiverId = currentChat.find(currChat=>currChat.receiverId!==contact);  
+        const receiverId = currentChat.members.find((member)=>member !==contact);  
+        console.log(receiverId);
 
-        socket.current.emit("sendMesaage",{
+        socket.current.emit("sendMessage",{
             senderId:contact,
-            receiverId:currentChat.receiverId,
+            receiverId:receiverId,
              text:newMessage,
-        })
+        });
 
         try{
             const res= await axios.post("http://localhost:5000/api/message",message);

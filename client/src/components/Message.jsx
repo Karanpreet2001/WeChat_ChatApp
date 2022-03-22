@@ -7,7 +7,7 @@ import axios from 'axios';
 
 const Message = ({message, own}) => {
 
-    console.log(message,own);
+    // console.log(message,own);
 
     const [userImage, setUserImage]=useState([]);
 
